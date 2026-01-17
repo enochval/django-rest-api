@@ -34,5 +34,5 @@ class Command(BaseCommand):
             order = Order.objects.create(user=user)
             for product in random.sample(list(products), 2):
                 OrderItem.objects.create(
-                    order=order, product=product, quantity=random.ran dint(1, 3)
+                    order=order, product=product, quantity=random.randint(1, 3)
                 )
