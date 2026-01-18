@@ -2,6 +2,7 @@ from django.db.models import Max
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from api.models import Product, Order
@@ -30,13 +31,12 @@ class UserOrderListAPIView(generics.ListAPIView):
         qs = super().get_queryset()
         return qs.filter(user=self.request.user)
 
-
-@api_view(['GET'])
-def product_info(request):
-    products = Product.objects.all()
-    serializer = ProductInfoSerializer({
-        "products": products,
-        "count": products.count(),
-        "max_price": products.aggregate(max_price=Max('price'))['max_price'] or 0
-    })
-    return Response(serializer.data)
+class ProductInfoAPIView(APIView):
+    def get(self, request):
+        products = Product.objects.all()
+        serializer = ProductInfoSerializer({
+            "products": products,
+            "count": products.count(),
+            "max_price": products.aggregate(max_price=Max('price'))['max_price'] or 0
+        })
+        return Response(serializer.data)
